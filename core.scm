@@ -397,9 +397,9 @@
 	     (let* ((new (%allocate-instance
 			  class
 			  (length the-slots-of-a-class)))
-		    (dsupers (getl initargs 'direct-supers '()))
+		    (dsupers (getl initargs direct-supers: '()))
 		    (dslots  (map list
-				  (getl initargs 'direct-slots  '())))
+				  (getl initargs direct-slots:  '())))
 		    (cpl     (let loop ((sups dsupers)
 					(so-far (list new)))
 				  (if (null? sups)
@@ -448,10 +448,10 @@
 			 (length (class-slots class)))))
 	       (slot-set! new
 			  'specializers
-			  (getl initargs 'specializers))
+			  (getl initargs specializers:))
 	       (slot-set! new
 			  'procedure
-			  (getl initargs 'procedure))
+			  (getl initargs procedure:))
 	       new)))))
 
 
@@ -540,12 +540,12 @@
 (%set-instance-class-to-self <class>)
 
 (define <top>          (make <class>
-			     'direct-supers (list)
-			     'direct-slots  (list)))
+			     direct-supers: (list)
+			     direct-slots:  (list)))
 
 (define <object>       (make <class>
-			     'direct-supers (list <top>)
-			     'direct-slots  (list)))
+			     direct-supers: (list <top>)
+			     direct-slots:  (list)))
 
 ;
 ; This cluster, together with the first cluster above that defines
@@ -568,22 +568,20 @@
 
 
 (define <procedure-class> (make <class>
-				'direct-supers (list <class>)
-				'direct-slots  (list)))
+				direct-supers: (list <class>)
+				direct-slots:  (list)))
 
 (define <entity-class>    (make <class>
-			        'direct-supers (list <procedure-class>)
-			        'direct-slots  (list)))
+			        direct-supers: (list <procedure-class>)
+			        direct-slots:  (list)))
 
 (define <generic>         (make <entity-class>
-			        'direct-supers (list <object>)
-			        'direct-slots  (list 'methods)))
+			        direct-supers: (list <object>)
+			        direct-slots:  (list 'methods)))
 
 (define <method>          (make <class>
-			        'direct-supers (list <object>)
-			        'direct-slots  (list 'specializers
-						     'procedure)))
-
+			        direct-supers: (list <object>)
+			        direct-slots:  (list 'specializers 'procedure))) 
 
 
 ;
@@ -593,8 +591,8 @@
 (define make-class
     (lambda (direct-supers direct-slots)
       (make <class>
-	    'direct-supers direct-supers
-	    'direct-slots  direct-slots)))
+	    direct-supers: direct-supers
+	    direct-slots:  direct-slots)))
 
 (define make-generic
     (lambda ()
@@ -603,8 +601,8 @@
 (define make-method
     (lambda (specializers procedure)
       (make <method>
-	    'specializers specializers
-	    'procedure    procedure)))
+	    specializers: specializers
+	    procedure:    procedure)))
 
 
 
@@ -778,12 +776,12 @@
 	(call-next-method)
 	(slot-set! class
 		   'direct-supers
-		   (getl initargs 'direct-supers '()))
+		   (getl initargs direct-supers: '()))
 	(slot-set! class
 		   'direct-slots
 		   (map (lambda (s)
 			  (if (pair? s) s (list s)))
-			(getl initargs 'direct-slots  '())))
+			(getl initargs direct-slots:  '())))
 	(slot-set! class 'cpl   (compute-cpl   class))
 	(slot-set! class 'slots (compute-slots class))
 	(let* ((nfields 0)
@@ -819,8 +817,8 @@
     (make-method (list <method>)
       (lambda (call-next-method method initargs)
 	(call-next-method)
-	(slot-set! method 'specializers (getl initargs 'specializers))
-	(slot-set! method 'procedure    (getl initargs 'procedure)))))
+	(slot-set! method specializers: (getl initargs 'specializers))
+	(slot-set! method procedure:    (getl initargs 'procedure)))))
 
 
 
@@ -913,14 +911,14 @@
 ;
 (define <primitive-class>
     (make <class>
-	  'direct-supers (list <class>)
-	  'direct-slots  (list)))
+	  direct-supers: (list <class>)
+	  direct-slots:  (list)))
 
 (define make-primitive-class
     (lambda class
       (make (if (null? class) <primitive-class> (car class))
-	    'direct-supers (list <top>)
-	    'direct-slots  (list))))
+	    direct-supers: (list <top>)
+	    direct-slots:  (list))))
 
 
 (define <pair>        (make-primitive-class))
