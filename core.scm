@@ -817,8 +817,8 @@
     (make-method (list <method>)
       (lambda (call-next-method method initargs)
 	(call-next-method)
-	(slot-set! method specializers: (getl initargs 'specializers))
-	(slot-set! method procedure:    (getl initargs 'procedure)))))
+	(slot-set! method 'specializers (getl initargs specializers:))
+	(slot-set! method 'procedure    (getl initargs procedure:)))))
 
 
 
